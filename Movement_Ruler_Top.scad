@@ -1,0 +1,60 @@
+use <Movement_Ruler_lib.scad>;
+movement_ruler_width = get_movement_ruler_width();
+movement_ruler_length = get_movement_ruler_length(); //should be 30
+
+movement_ruler_height = get_movement_ruler_height();
+movement_ruler_pocket_depth = get_movement_ruler_pocket_depth();
+
+pivot_outer_rad = get_pivot_outer_rad();
+pivot_inner_rad = get_pivot_inner_rad();
+pivot_second_inner_rad = get_pivot_second_inner_rad();
+
+ruler_ridge_length = get_ruler_ridge_length();
+
+bottom_ruler_indent = get_bottom_ruler_indent();
+
+pivot_second_inner_bottom_offset = get_pivot_second_inner_bottom_offset();
+
+bottom_jut_length = 8;
+
+bottom_inner_most_rad = 9/2;
+
+module pie_slice(){
+    radius = 16;
+    angle = 45;   // degrees
+
+    polygon(points = concat(
+        [[0,0]],
+        [ for (a = [0:1:angle])
+            [ radius * cos(a), radius * sin(a) ]
+        ]
+    ));
+}
+
+//bottom ruler piece
+difference(){
+    translate([-movement_ruler_width/2,0,0]){
+    difference(){
+        cube([ movement_ruler_width, movement_ruler_length, movement_ruler_height]);
+        //Bottom large indent
+        translate([1,-.01,-1])cube([movement_ruler_width-ruler_ridge_length, movement_ruler_length+0.2, movement_ruler_pocket_depth+1]);
+                
+        }
+     //top shallow indent for pivot piece
+        translate([0,-(bottom_jut_length-0.1),movement_ruler_height-(movement_ruler_height-movement_ruler_pocket_depth)])cube([movement_ruler_width, bottom_jut_length, movement_ruler_height-movement_ruler_pocket_depth]);   
+    }
+    //larger inner circle which punches through the top
+    //translate([0,0,-0.1])cylinder(h=movement_ruler_height,r=pivot_inner_rad);
+}
+
+translate([0,-bottom_jut_length*(1/3),-bottom_ruler_indent+0.1])
+difference(){
+    
+    translate([0,0,-0.1])cylinder(h=movement_ruler_height,r=pivot_inner_rad);
+    
+    translate([0,0,-0.2])cylinder(h=movement_ruler_height,r=bottom_inner_most_rad);
+        //translate([0,0,-0.1])cylinder(h=pivot_second_inner_bottom_offset,r=pivot_second_inner_rad);
+    
+    //top shallow indent for pivot piece
+    //translate([0,0,movement_ruler_height-bottom_ruler_indent])cylinder(h=bottom_ruler_indent+0.1,r=pivot_outer_rad+0.1);
+}
