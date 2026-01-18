@@ -38,6 +38,18 @@ module pie_slice(){
     ));
 }
 
+module circle_slice(rad = miniture_base_rad, ang = 60){
+    radius = rad;
+    angle = ang;   // degrees
+
+    polygon(points = concat(
+        [[0,0]],
+        [ for (a = [0:1:angle])
+            [ radius * cos(a), radius * sin(a) ]
+        ]
+    ));
+}
+
 module create_clip(){  
     
     translate([0,0,0.5])
@@ -59,8 +71,18 @@ difference(){
             cube([ movement_ruler_width, movement_ruler_length, movement_ruler_height]);
             //Bottom large indent
             translate([1,-.01,-1])cube([movement_ruler_width-ruler_ridge_length, movement_ruler_length+0.2, movement_ruler_pocket_depth+1]);
-                    
+            //cut circle for miniature base
+            translate([movement_ruler_width/2,movement_ruler_length+(miniture_base_rad*.7),-1])cylinder(h=movement_ruler_height+2,r=miniture_base_rad);        
             }
+            //round edge for miniature base
+            
+            //translate([movement_ruler_width/2,movement_ruler_length+(miniture_base_rad*0.7)-2,-1])cylinder(h=movement_ruler_height+2,r=miniture_base_rad); //translate([movement_ruler_width/2,movement_ruler_length+(miniture_base_rad*0.7)-2,-2])cylinder(h=movement_ruler_height+4,r=miniture_base_rad*0.85);
+            difference(){
+                translate([movement_ruler_width/2,movement_ruler_length+(miniture_base_rad*0.7)-2,0])rotate([0,0,-123.5])linear_extrude(movement_ruler_height)circle_slice(rad=miniture_base_rad,ang=67);
+                translate([movement_ruler_width/2,movement_ruler_length+(miniture_base_rad*0.7),-1.9])rotate([0,0,-123.5])linear_extrude(movement_ruler_height+2)circle_slice(rad=miniture_base_rad,ang=67);
+            }
+            
+            
          //top shallow indent for pivot piece
             translate([0,-(bottom_jut_length_straight-0.1),movement_ruler_height-(movement_ruler_height-movement_ruler_pocket_depth)])cube([movement_ruler_width, bottom_jut_length_straight, movement_ruler_height-movement_ruler_pocket_depth]);   
         }  
