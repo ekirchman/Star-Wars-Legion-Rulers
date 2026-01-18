@@ -15,13 +15,18 @@ bottom_ruler_indent = get_bottom_ruler_indent();
 
 pivot_second_inner_bottom_offset = get_pivot_second_inner_bottom_offset();
 
-bottom_jut_length = 8;
+bottom_jut_length = pivot_outer_rad*2;
+bottom_jut_length_straight = bottom_jut_length-5;
 
 bottom_inner_most_rad = 9/2;
 
+clip_cube_depth=2;
+clip_cube_width=1;
+clip_cube_height=movement_ruler_pocket_depth;
+
 module pie_slice(){
     radius = 16;
-    angle = 45;   // degrees
+    angle = 60;   // degrees
 
     polygon(points = concat(
         [[0,0]],
@@ -31,30 +36,61 @@ module pie_slice(){
     ));
 }
 
-//bottom ruler piece
-difference(){
-    translate([-movement_ruler_width/2,0,0]){
-    difference(){
-        cube([ movement_ruler_width, movement_ruler_length, movement_ruler_height]);
-        //Bottom large indent
-        translate([1,-.01,-1])cube([movement_ruler_width-ruler_ridge_length, movement_ruler_length+0.2, movement_ruler_pocket_depth+1]);
-                
-        }
-     //top shallow indent for pivot piece
-        translate([0,-(bottom_jut_length-0.1),movement_ruler_height-(movement_ruler_height-movement_ruler_pocket_depth)])cube([movement_ruler_width, bottom_jut_length, movement_ruler_height-movement_ruler_pocket_depth]);   
+module create_clip(){  
+    
+    union(){
+        translate([0,0,0.5])cube([clip_cube_width, clip_cube_depth, movement_ruler_pocket_depth]);
+        translate([clip_cube_width,0,0.5])rotate([-90,0,90])linear_extrude(1)polygon(points=[
+        [0, 0],      // right angle corner
+        [clip_cube_depth+2, 0],     // base
+        [0, 2]      // height
+        ]);
     }
-    //larger inner circle which punches through the top
-    //translate([0,0,-0.1])cylinder(h=movement_ruler_height,r=pivot_inner_rad);
 }
 
-translate([0,-bottom_jut_length*(1/3),-bottom_ruler_indent+0.1])
+//bottom ruler piece
+translate([0,bottom_jut_length/2,bottom_ruler_indent+0.1]){
+difference(){
+    translate([-movement_ruler_width/2,0,0]){
+        difference(){
+            cube([ movement_ruler_width, movement_ruler_length, movement_ruler_height]);
+            //Bottom large indent
+            translate([1,-.01,-1])cube([movement_ruler_width-ruler_ridge_length, movement_ruler_length+0.2, movement_ruler_pocket_depth+1]);
+                    
+            }
+         //top shallow indent for pivot piece
+            translate([0,-(bottom_jut_length_straight-0.1),movement_ruler_height-(movement_ruler_height-movement_ruler_pocket_depth)])cube([movement_ruler_width, bottom_jut_length_straight, movement_ruler_height-movement_ruler_pocket_depth]);   
+        }  
+    }
+    pivot_cutout_outside = pivot_outer_rad+2.5;
+    pivot_cutout_inside = pivot_cutout_outside-2;
+    difference(){
+        translate([0,-pivot_outer_rad+0.5,0])cylinder(h=movement_ruler_height,r=pivot_cutout_outside);
+        translate([0,-pivot_outer_rad+0.5,-2.01])cylinder(h=movement_ruler_height+1,r=pivot_cutout_inside);
+        
+        //Cut the pivot circle. Yes, this is a mess
+        translate([-pivot_cutout_outside,-pivot_cutout_outside-pivot_outer_rad-(pivot_outer_rad/3-0.3),-0.9])cube([pivot_cutout_outside*2, pivot_cutout_outside*2, movement_ruler_height+1]);
+    }
+   
+   //translate([0,-pivot_outer_rad+0.5,-2.1])cylinder(h=movement_ruler_height+1,r=pivot_cutout_inside); //translate([-pivot_cutout_outside,-pivot_cutout_outside-pivot_outer_rad-(pivot_outer_rad/3-0.2),-2])cube([pivot_cutout_outside*2, pivot_cutout_outside*2, movement_ruler_height+1]);
+    
+    translate([0,-pivot_outer_rad+0.5,movement_ruler_height-1])cylinder(h=1,r=pivot_outer_rad);
+}
+
+
 difference(){
     
     translate([0,0,-0.1])cylinder(h=movement_ruler_height,r=pivot_inner_rad);
     
-    translate([0,0,-0.2])cylinder(h=movement_ruler_height,r=bottom_inner_most_rad);
-        //translate([0,0,-0.1])cylinder(h=pivot_second_inner_bottom_offset,r=pivot_second_inner_rad);
+    translate([0,0,-movement_ruler_pocket_depth])cylinder(h=movement_ruler_height,r=pivot_inner_rad+0.1);
     
-    //top shallow indent for pivot piece
-    //translate([0,0,movement_ruler_height-bottom_ruler_indent])cylinder(h=bottom_ruler_indent+0.1,r=pivot_outer_rad+0.1);
+    translate([0,0,-0.2])cylinder(h=movement_ruler_height,r=bottom_inner_most_rad);
+    
+    translate([0,0,-1])linear_extrude(movement_ruler_height+1)pie_slice();
+    rotate(120)translate([0,0,-1])linear_extrude(movement_ruler_height+1)pie_slice();
+    rotate(240)translate([0,0,-1])linear_extrude(movement_ruler_height+1)pie_slice();
+    
 }
+rotate([0,0,-60])translate([-clip_cube_width/2,bottom_inner_most_rad-clip_cube_depth+1,0])create_clip();
+rotate([0,0,-180])translate([-clip_cube_width/2,bottom_inner_most_rad-clip_cube_depth+1-0.2,0])create_clip();
+rotate([0,0,60])translate([-clip_cube_width/2,bottom_inner_most_rad-clip_cube_depth+1-0.2,0])create_clip();
