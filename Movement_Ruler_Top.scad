@@ -15,13 +15,15 @@ bottom_ruler_indent = get_bottom_ruler_indent();
 
 pivot_second_inner_bottom_offset = get_pivot_second_inner_bottom_offset();
 
+miniture_base_rad = get_miniture_base_rad();
+
 bottom_jut_length = pivot_outer_rad*2;
 bottom_jut_length_straight = bottom_jut_length-5;
 
 bottom_inner_most_rad = 9/2;
 
 clip_cube_depth=2;
-clip_cube_width=1;
+clip_cube_width=2;
 clip_cube_height=movement_ruler_pocket_depth;
 
 module pie_slice(){
@@ -38,12 +40,13 @@ module pie_slice(){
 
 module create_clip(){  
     
+    translate([0,0,0.5])
     union(){
         translate([0,0,0.5])cube([clip_cube_width, clip_cube_depth, movement_ruler_pocket_depth]);
-        translate([clip_cube_width,0,0.5])rotate([-90,0,90])linear_extrude(1)polygon(points=[
+        translate([clip_cube_width,0,0.5])rotate([-90,0,90])linear_extrude(clip_cube_width)polygon(points=[
         [0, 0],      // right angle corner
-        [clip_cube_depth+2, 0],     // base
-        [0, 2]      // height
+        [clip_cube_depth+1, 0],     // base
+        [0, 1]      // height
         ]);
     }
 }
@@ -94,3 +97,6 @@ difference(){
 rotate([0,0,-60])translate([-clip_cube_width/2,bottom_inner_most_rad-clip_cube_depth+1,0])create_clip();
 rotate([0,0,-180])translate([-clip_cube_width/2,bottom_inner_most_rad-clip_cube_depth+1-0.2,0])create_clip();
 rotate([0,0,60])translate([-clip_cube_width/2,bottom_inner_most_rad-clip_cube_depth+1-0.2,0])create_clip();
+
+
+//translate([0,movement_ruler_length+(miniture_base_rad*1.3),0])cylinder(h=movement_ruler_height,r=miniture_base_rad);

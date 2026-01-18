@@ -23,7 +23,7 @@ difference(){
         //Bottom large indent
         translate([1,-.01,-1])cube([movement_ruler_width-ruler_ridge_length, movement_ruler_length+0.2, movement_ruler_pocket_depth+1]);
         //top shallow indent for pivot piece
-        translate([-1,-movement_ruler_length+8,movement_ruler_height-bottom_ruler_indent])cube([movement_ruler_width+2, movement_ruler_length, bottom_ruler_indent+0.1]);
+        translate([-1,-movement_ruler_length+9,movement_ruler_height-bottom_ruler_indent])cube([movement_ruler_width+2, movement_ruler_length, bottom_ruler_indent+0.1]);
         
         }   //translate([-1,0,movement_ruler_height-bottom_ruler_indent+0.1])cube([movement_ruler_width+2, movement_ruler_length+0.2, bottom_ruler_indent]);
     }
