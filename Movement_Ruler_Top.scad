@@ -1,6 +1,6 @@
 use <Movement_Ruler_lib.scad>;
 movement_ruler_width = get_movement_ruler_width();
-movement_ruler_length = get_movement_ruler_length(); //should be 30
+movement_ruler_length = get_movement_1_top_ruler_length(); //should be 32
 
 movement_ruler_height = get_movement_ruler_height();
 movement_ruler_pocket_depth = get_movement_ruler_pocket_depth();
@@ -18,7 +18,7 @@ pivot_second_inner_bottom_offset = get_pivot_second_inner_bottom_offset();
 miniture_base_rad = get_miniture_base_rad();
 
 bottom_jut_length = pivot_outer_rad*2;
-bottom_jut_length_straight = bottom_jut_length-5;
+bottom_jut_length_straight = bottom_jut_length-7;
 
 bottom_inner_most_rad = 9/2;
 
@@ -38,17 +38,7 @@ module pie_slice(){
     ));
 }
 
-module circle_slice(rad = miniture_base_rad, ang = 60){
-    radius = rad;
-    angle = ang;   // degrees
 
-    polygon(points = concat(
-        [[0,0]],
-        [ for (a = [0:1:angle])
-            [ radius * cos(a), radius * sin(a) ]
-        ]
-    ));
-}
 
 module create_clip(){  
     
@@ -63,10 +53,10 @@ module create_clip(){
     }
 }
 
-//bottom ruler piece
+//top ruler piece
 translate([0,bottom_jut_length/2,bottom_ruler_indent+0.1]){
 difference(){
-    translate([-movement_ruler_width/2,0,0]){
+    translate([-movement_ruler_width/2,-2,0]){
         difference(){
             cube([ movement_ruler_width, movement_ruler_length, movement_ruler_height]);
             //Bottom large indent
@@ -90,11 +80,12 @@ difference(){
     pivot_cutout_outside = pivot_outer_rad+2.5;
     pivot_cutout_inside = pivot_cutout_outside-2;
     difference(){
-        translate([0,-pivot_outer_rad+0.5,0])cylinder(h=movement_ruler_height,r=pivot_cutout_outside);
-        translate([0,-pivot_outer_rad+0.5,-2.01])cylinder(h=movement_ruler_height+1,r=pivot_cutout_inside);
+        //translate([0,-pivot_outer_rad+0.5,0])cylinder(h=movement_ruler_height,r=pivot_cutout_outside);
+       translate([0,-pivot_cutout_outside+1,0])rotate([0,0,50])linear_extrude(movement_ruler_height)circle_slice(rad=pivot_cutout_outside+0.5, ang=80); //translate([0,-pivot_outer_rad+0.5,-2.01])cylinder(h=movement_ruler_height+1,r=pivot_cutout_inside);
+      translate([0,-pivot_cutout_outside-1,-2])rotate([0,0,50])linear_extrude(movement_ruler_height+2)circle_slice(rad=pivot_cutout_outside+1.05, ang=80);
         
         //Cut the pivot circle. Yes, this is a mess
-        translate([-pivot_cutout_outside,-pivot_cutout_outside-pivot_outer_rad-(pivot_outer_rad/3-0.3),-0.9])cube([pivot_cutout_outside*2, pivot_cutout_outside*2, movement_ruler_height+1]);
+        //translate([-pivot_cutout_outside,-pivot_cutout_outside-pivot_outer_rad-(pivot_outer_rad/3-0.3),-0.9])cube([pivot_cutout_outside*2, pivot_cutout_outside*2, movement_ruler_height+1]);
     }
    
    //translate([0,-pivot_outer_rad+0.5,-2.1])cylinder(h=movement_ruler_height+1,r=pivot_cutout_inside); //translate([-pivot_cutout_outside,-pivot_cutout_outside-pivot_outer_rad-(pivot_outer_rad/3-0.2),-2])cube([pivot_cutout_outside*2, pivot_cutout_outside*2, movement_ruler_height+1]);
