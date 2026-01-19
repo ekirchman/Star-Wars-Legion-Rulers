@@ -80,12 +80,9 @@ difference(){
     pivot_cutout_outside = pivot_outer_rad+2.5;
     pivot_cutout_inside = pivot_cutout_outside-2;
     difference(){
-        //translate([0,-pivot_outer_rad+0.5,0])cylinder(h=movement_ruler_height,r=pivot_cutout_outside);
-       translate([0,-pivot_cutout_outside+1,0])rotate([0,0,50])linear_extrude(movement_ruler_height)circle_slice(rad=pivot_cutout_outside+0.5, ang=80); //translate([0,-pivot_outer_rad+0.5,-2.01])cylinder(h=movement_ruler_height+1,r=pivot_cutout_inside);
+        translate([0,-pivot_cutout_outside+1,0])rotate([0,0,50])linear_extrude(movement_ruler_height)circle_slice(rad=pivot_cutout_outside+0.5, ang=80); 
       translate([0,-pivot_cutout_outside-1,-2])rotate([0,0,50])linear_extrude(movement_ruler_height+2)circle_slice(rad=pivot_cutout_outside+1.05, ang=80);
-        
-        //Cut the pivot circle. Yes, this is a mess
-        //translate([-pivot_cutout_outside,-pivot_cutout_outside-pivot_outer_rad-(pivot_outer_rad/3-0.3),-0.9])cube([pivot_cutout_outside*2, pivot_cutout_outside*2, movement_ruler_height+1]);
+       
     }
    
    //translate([0,-pivot_outer_rad+0.5,-2.1])cylinder(h=movement_ruler_height+1,r=pivot_cutout_inside); //translate([-pivot_cutout_outside,-pivot_cutout_outside-pivot_outer_rad-(pivot_outer_rad/3-0.2),-2])cube([pivot_cutout_outside*2, pivot_cutout_outside*2, movement_ruler_height+1]);

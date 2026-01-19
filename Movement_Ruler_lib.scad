@@ -1,6 +1,6 @@
 function get_movement_ruler_width() = 15;
 function get_movement_1_bottom_ruler_length() = 30;
-function get_movement_1_top_ruler_length() = 32;
+function get_movement_1_top_ruler_length() = 34;
 
 function get_movement_ruler_height() = 4.5;
 function get_movement_ruler_pocket_depth() = 3.5;
